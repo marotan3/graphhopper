@@ -81,7 +81,7 @@ public class GraphHopper implements GraphHopperAPI
     private int periodicUpdates = -1;
     private int lazyUpdates = -1;
     private int neighborUpdates = -1;
-    private double logMessages = -1;
+    private double logMessages = 1;
     // for OSM import
     private String osmFile;
     private double osmReaderWayPointMaxDistance = 1;
@@ -804,8 +804,8 @@ public class GraphHopper implements GraphHopperAPI
     {
         FlagEncoder defaultVehicle = getDefaultVehicle();
         Weighting weighting = createWeighting(new WeightingMap(chWeightingStr), defaultVehicle);
-        PrepareContractionHierarchies tmpPrepareCH = new PrepareContractionHierarchies(new GHDirectory("", DAType.RAM_INT),
-                (LevelGraph) graph, defaultVehicle, weighting, traversalMode);
+        PrepareContractionHierarchies tmpPrepareCH = new PrepareContractionHierarchies(new GHDirectory("", DAType.RAM_INT),(LevelGraph) graph,
+                defaultVehicle, weighting, traversalMode);
         tmpPrepareCH.setPeriodicUpdates(periodicUpdates).
                 setLazyUpdates(lazyUpdates).
                 setNeighborUpdates(neighborUpdates).
@@ -973,7 +973,7 @@ public class GraphHopper implements GraphHopperAPI
 
             sw = new StopWatch().start();
             Path path = algo.calcPath(fromQResult.getClosestNode(), toQResult.getClosestNode());
-            if (path.getTime() < 0)
+            if (path.getMillis() < 0)
                 throw new RuntimeException("Time was negative. Please report as bug and include:" + request);
 
             paths.add(path);
