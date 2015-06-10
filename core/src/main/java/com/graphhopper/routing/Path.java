@@ -429,9 +429,15 @@ public class Path
                     assert java.lang.Double.compare(prevLat, nodeAccess.getLatitude(baseNode)) == 0;
                     assert java.lang.Double.compare(prevLon, nodeAccess.getLongitude(baseNode)) == 0;
                 }
-
-                name = edge.getName();
+                int tag = nodeAccess.getTag(baseNode);
+                if(tag != 0){
+                	name = edge.getName() + ", knooppunt " +Integer.toString(tag)+ "";
+                } else {
+                	name = edge.getName();
+                }
+                
                 annotation = encoder.getAnnotation(flags, tr);
+                
 
                 if ((prevName == null) && (!isRoundabout)) // very first instruction (if not in Roundabout)
                 {

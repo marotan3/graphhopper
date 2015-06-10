@@ -104,8 +104,8 @@ public class DouglasPeucker
                 continue;
             }
 
-            points.set(freeIndex, points.getLatitude(currentIndex), points.getLongitude(currentIndex), points.getElevation(currentIndex));
-            points.set(currentIndex, Double.NaN, Double.NaN, Double.NaN);
+            points.set(freeIndex, points.getLatitude(currentIndex), points.getLongitude(currentIndex), points.getElevation(currentIndex),0);
+            points.set(currentIndex, Double.NaN, Double.NaN, Double.NaN,0);
             // find next free index
             int max = currentIndex;
             int searchIndex = freeIndex + 1;
@@ -161,7 +161,7 @@ public class DouglasPeucker
         {
             for (int i = fromIndex + 1; i < lastIndex; i++)
             {
-                points.set(i, Double.NaN, Double.NaN, Double.NaN);
+                points.set(i, Double.NaN, Double.NaN, Double.NaN,0);
                 counter++;
             }
         } else

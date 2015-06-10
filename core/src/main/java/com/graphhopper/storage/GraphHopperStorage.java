@@ -72,7 +72,7 @@ public class GraphHopperStorage implements GraphStorage
      */
     protected int edgeCount;
     // node memory layout:
-    protected int N_EDGE_REF, N_LAT, N_LON, N_ELE, N_ADDITIONAL;
+    protected int N_EDGE_REF, N_LAT, N_LON, N_ELE, N_ADDITIONAL, N_TAG;
     /**
      * Specifies how many entries (integers) are used per node
      */
@@ -1463,6 +1463,7 @@ public class GraphHopperStorage implements GraphStorage
         N_EDGE_REF = nextNodeEntryIndex(4);
         N_LAT = nextNodeEntryIndex(4);
         N_LON = nextNodeEntryIndex(4);
+        N_TAG = nextNodeEntryIndex(4);
         if (nodeAccess.is3D())
             N_ELE = nextNodeEntryIndex(4);
         else

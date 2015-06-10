@@ -2,6 +2,7 @@ package com.graphhopper.android;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layers;
@@ -24,6 +26,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -58,6 +61,7 @@ import com.graphhopper.util.Helper;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.ProgressListener;
 import com.graphhopper.util.StopWatch;
+import com.graphhopper.util.shapes.GHPoint;
 
 public class MainActivity extends Activity
 {
@@ -90,41 +94,77 @@ public class MainActivity extends Activity
         }
         Layers layers = mapView.getLayerManager().getLayers();
 
-        if (start != null && end == null)
-        {
-            end = tapLatLong;
-            shortestPathRunning = true;
-            Marker marker = createMarker(tapLatLong, R.drawable.flag_red);
-            if (marker != null)
-            {
-                layers.add(marker);
-            }
+        
+        //FIXME EXPERIMENT DATA
+//        if (start != null && end == null)
+//        {
+//            end = tapLatLong;
+//            shortestPathRunning = true;
+//            Marker marker = createMarker(tapLatLong, R.drawable.flag_red);
+//            if (marker != null)
+//            {
+//                layers.add(marker);
+//            }
+//
+//            calcPath(start.latitude, start.longitude, end.latitude,
+//                    end.longitude);
+//        } else
+//        {
+//            start = tapLatLong;
+//            end = null;
+//            // remove all layers but the first one, which is the map
+//            while (layers.size() > 1)
+//            {
+//                layers.remove(1);
+//            }
+//
+//            Marker marker = createMarker(start, R.drawable.flag_green);
+//            if (marker != null)
+//            {
+//                layers.add(marker);
+//            }
+//        }
+        shortestPathRunning = true;
+        final ArrayList<GHPoint> points = new ArrayList<GHPoint>();
+    	
+        // Korte route: 12.08 km 
+//		points.add(new GHPoint(53.164269,6.394043));
+//		points.add(new GHPoint(53.201406,6.517639));
 
-            calcPath(start.latitude, start.longitude, end.latitude,
-                    end.longitude);
-        } else
-        {
-            start = tapLatLong;
-            end = null;
-            // remove all layers but the first one, which is the map
-            while (layers.size() > 1)
-            {
-                layers.remove(1);
-            }
+    	// Normale route: 59.85 km 
+//		points.add(new GHPoint(53.201406,6.517639));
+//		points.add(new GHPoint(52.85037,6.610508));
 
-            Marker marker = createMarker(start, R.drawable.flag_green);
-            if (marker != null)
-            {
-                layers.add(marker);
-            }
-        }
+    	// Grote route: 157 km 
+//		points.add(new GHPoint(52.212113,5.975667));
+//		points.add(new GHPoint(51.585797,4.763077));
+
+    	// Erg grote route: 497 km 
+//		points.add(new GHPoint(53.195801,5.798206));
+//		points.add(new GHPoint(52.082038,4.741287));
+//		points.add(new GHPoint(50.846489,5.73761));
+    	
+        // Extreme route: 3000 km
+    	points.add(new GHPoint(53.436895,6.793413));
+    	points.add(new GHPoint(51.522843,3.47537));
+    	points.add(new GHPoint(53.187213,7.198963));
+    	points.add(new GHPoint(52.956731,4.74824));
+    	points.add(new GHPoint(51.335599,5.443361));
+    	points.add(new GHPoint(53.384506,6.132774));
+    	points.add(new GHPoint(51.445114,4.295633));
+    	points.add(new GHPoint(52.242452,6.904864));
+    	points.add(new GHPoint(52.440878,4.826667));
+    	points.add(new GHPoint(50.846489,5.73761));
+    	
+        calcOwnPath(points);
         return true;
     }
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+    	//requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         AndroidGraphicFactory.createInstance(getApplication());
@@ -163,7 +203,7 @@ public class MainActivity extends Activity
         remoteButton = (Button) findViewById(R.id.remote_button);
         // TODO get user confirmation to download
         // if (AndroidHelper.isFastDownload(this))
-        chooseAreaFromRemote();
+        //chooseAreaFromRemote();
         chooseAreaFromLocal();
     }
 
@@ -413,9 +453,18 @@ public class MainActivity extends Activity
                     }
                 };
         tileRendererLayer.setTextScale(1.5f);
+        XmlRenderTheme renderTheme;
+        try {
+        	renderTheme = new AssetsRenderTheme(this, "", "renderthemes/customtheme.xml");
+		} catch (IOException e) {
+			renderTheme = null;
+			e.printStackTrace();
+		}
+        
+        //tileRendererLayer.setXmlRenderTheme(renderTheme);
         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
-        mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(mapDataStore.boundingBox().getCenterPoint(), (byte) 15));
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(mapDataStore.boundingBox().getCenterPoint(), (byte) 12));
 
         setContentView(mapView);
         loadGraphStorage();
@@ -428,7 +477,9 @@ public class MainActivity extends Activity
         {
             protected Path saveDoInBackground( Void... v ) throws Exception
             {
-                GraphHopper tmpHopp = new GraphHopper().forMobile();
+            	//FIXME EXPERIMENT DATA
+//                GraphHopper tmpHopp = new GraphHopper().forMobile();
+                GraphHopper tmpHopp = new GraphHopper().forDesktop();
                 tmpHopp.load(new File(mapsFolder, currentArea).getAbsolutePath());
                 log("found graph " + tmpHopp.getGraph().toString() + ", nodes:" + tmpHopp.getGraph().getNodes());
                 hopper = tmpHopp;
@@ -488,6 +539,59 @@ public class MainActivity extends Activity
         return new Marker(p, bitmap, 0, -bitmap.getHeight() / 2);
     }
 
+    
+    /**
+     * CalcOwnPath method for experiment. Will calculate route with points in ArrayList
+     */
+    public void calcOwnPath(final ArrayList<GHPoint> points)
+    {
+
+    	log("calculating path ...");
+        new AsyncTask<Void, Void, GHResponse>()
+        {
+            float time;
+
+            protected GHResponse doInBackground( Void... v )
+            {
+                StopWatch sw = new StopWatch().start();
+                GHRequest req = new GHRequest();
+                for (GHPoint point : points) {
+                	req.addPoint(point);
+        		}
+
+                req.setAlgorithm(AlgorithmOptions.ASTAR_BI);
+                req.getHints().
+                        put("instructions", "true");
+                GHResponse resp = hopper.route(req);
+                time = sw.stop().getSeconds();
+                return resp;
+            }
+
+            protected void onPostExecute( GHResponse resp )
+            {
+                if (!resp.hasErrors())
+                {
+                	String pointLog = "";
+                	for (int i =0;i < points.size();i++) {
+                		pointLog += " point"+Integer.toString(i)+": "+Double.toString(points.get(i).getLat())+","+Double.toString(points.get(i).getLon());
+            		}
+                    log(pointLog+ "; found path with distance:" + resp.getDistance()
+                            / 1000f + ", nodes:" + resp.getPoints().getSize() + ", time:"
+                            + time + " " + resp.getDebugInfo());
+                    logUser("the route is " + (int) (resp.getDistance() / 100) / 10f
+                            + "km long, time:" + resp.getTime() / 60000f + "min, debug:" + time);
+
+                    mapView.getLayerManager().getLayers().add(createPolyline(resp));
+                    //mapView.redraw();
+                } else
+                {
+                    logUser("Error:" + resp.getErrors());
+                }
+                shortestPathRunning = false;
+            }
+        }.execute();
+    }
+    
     public void calcPath( final double fromLat, final double fromLon,
             final double toLat, final double toLon )
     {
@@ -501,7 +605,7 @@ public class MainActivity extends Activity
             {
                 StopWatch sw = new StopWatch().start();
                 GHRequest req = new GHRequest(fromLat, fromLon, toLat, toLon).
-                        setAlgorithm(AlgorithmOptions.DIJKSTRA_BI);
+                        setAlgorithm(AlgorithmOptions.DIJKSTRA);
                 req.getHints().
                         put("instructions", "false");
                 GHResponse resp = hopper.route(req);
@@ -544,7 +648,8 @@ public class MainActivity extends Activity
     private void logUser( String str )
     {
         log(str);
-        Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+        //FIXME Experiment DATA toast short
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
     private static final int NEW_MENU_ID = Menu.FIRST + 1;
 

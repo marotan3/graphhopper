@@ -559,7 +559,6 @@ public class OSMReader implements DataReader
     {
         if (isInBounds(node))
         {
-            addNode(node);
 
             // analyze node tags for barriers
             if (node.hasTags())
@@ -568,6 +567,19 @@ public class OSMReader implements DataReader
                 if (nodeFlags != 0)
                     getNodeFlagsMap().put(node.getId(), nodeFlags);
             }
+            if(node.hasTag("rcn_ref")){
+            	int tag;
+            	try {
+            		tag = Integer.parseInt(node.getTag("rcn_ref"));
+            		//TODO better error handling when rcn_ref is not a number
+            	} catch (NumberFormatException e) {
+            	    tag = 0;
+            	}
+            	addNode(node, tag);
+            } else{
+            	addNode(node, 0);
+            }
+            
 
             locations++;
         } else
@@ -576,7 +588,7 @@ public class OSMReader implements DataReader
         }
     }
 
-    boolean addNode( OSMNode node )
+    boolean addNode( OSMNode node, int rcnTag )
     {
         int nodeType = getNodeMap().get(node.getId());
         if (nodeType == EMPTY)
@@ -587,10 +599,10 @@ public class OSMReader implements DataReader
         double ele = getElevation(node);
         if (nodeType == TOWER_NODE)
         {
-            addTowerNode(node.getId(), lat, lon, ele);
+            addTowerNode(node.getId(), lat, lon, ele, rcnTag);
         } else if (nodeType == PILLAR_NODE)
         {
-            pillarInfo.setNode(nextPillarId, lat, lon, ele);
+            pillarInfo.setNode(nextPillarId, lat, lon, ele, 0);
             getNodeMap().put(node.getId(), nextPillarId + 3);
             nextPillarId++;
         }
@@ -642,12 +654,12 @@ public class OSMReader implements DataReader
         }
     }
 
-    int addTowerNode( long osmId, double lat, double lon, double ele )
+    int addTowerNode( long osmId, double lat, double lon, double ele, int tag )
     {
         if (nodeAccess.is3D())
-            nodeAccess.setNode(nextTowerId, lat, lon, ele);
+            nodeAccess.setNode(nextTowerId, lat, lon, ele, tag);
         else
-            nodeAccess.setNode(nextTowerId, lat, lon);
+            nodeAccess.setNode(nextTowerId, lat, lon, tag);
 
         int id = -(nextTowerId + 3);
         getNodeMap().put(osmId, id);
@@ -824,8 +836,8 @@ public class OSMReader implements DataReader
         if (convertToTowerNode)
         {
             // convert pillarNode type to towerNode, make pillar values invalid
-            pillarInfo.setNode(tmpNode, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-            tmpNode = addTowerNode(osmId, lat, lon, ele);
+            pillarInfo.setNode(tmpNode, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, 0);
+            tmpNode = addTowerNode(osmId, lat, lon, ele, 0);
         } else
         {
             if (pointList.is3D())
@@ -868,7 +880,7 @@ public class OSMReader implements DataReader
 
         final long id = newNode.getId();
         prepareHighwayNode(id);
-        addNode(newNode);
+        addNode(newNode, 0);
         return id;
     }
 

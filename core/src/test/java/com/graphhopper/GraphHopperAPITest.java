@@ -37,11 +37,11 @@ public class GraphHopperAPITest
     {
         GraphStorage graph = new GraphBuilder(encodingManager).create();
         NodeAccess na = graph.getNodeAccess();
-        na.setNode(0, 42, 10);
-        na.setNode(1, 42.1, 10.1);
-        na.setNode(2, 42.1, 10.2);
-        na.setNode(3, 42, 10.4);
-        na.setNode(4, 41.9, 10.2);
+        na.setNode(0, 42, 10, 0);
+        na.setNode(1, 42.1, 10.1, 0);
+        na.setNode(2, 42.1, 10.2, 0);
+        na.setNode(3, 42, 10.4, 0);
+        na.setNode(4, 41.9, 10.2, 0);
 
         graph.edge(0, 1, 10, true);
         graph.edge(1, 2, 10, false);
@@ -70,10 +70,10 @@ public class GraphHopperAPITest
     {
         GraphStorage graph = new GraphBuilder(encodingManager).create();
         NodeAccess na = graph.getNodeAccess();
-        na.setNode(0, 42, 10);
-        na.setNode(1, 42.1, 10.1);
-        na.setNode(2, 42.1, 10.2);
-        na.setNode(3, 42, 10.4);
+        na.setNode(0, 42, 10, 0);
+        na.setNode(1, 42.1, 10.1, 0);
+        na.setNode(2, 42.1, 10.2, 0);
+        na.setNode(3, 42, 10.4, 0);
 
         graph.edge(0, 1, 10, true);
         graph.edge(2, 3, 10, true);

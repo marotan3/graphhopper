@@ -815,14 +815,16 @@ public class LocationIndexTree implements LocationIndex
                     {
                         if (normedDist < closestMatch.getQueryDistance())
                         {
-//                        	QueryResult NodeQuery = new QueryResult(graph.getNodeAccess().getLatitude(node), graph.getNodeAccess().getLongitude(node));
-                            closestMatch.setQueryDistance(normedDist);
-                            closestMatch.setClosestNode(node);
-                            closestMatch.setClosestEdge(edge.detach(false));
-                            closestMatch.setWayIndex(wayIndex);
-//                          closestMatch.setSnappedPosition(NodeQuery.getSnappedPosition());
-                            closestMatch.setSnappedPosition(pos);
-                            return true;
+                        	if(nodeAccess.getTag(node) != 0){
+	//                        	QueryResult NodeQuery = new QueryResult(graph.getNodeAccess().getLatitude(node), graph.getNodeAccess().getLongitude(node));
+	                            closestMatch.setQueryDistance(normedDist);
+	                            closestMatch.setClosestNode(node);
+	                            closestMatch.setClosestEdge(edge.detach(false));
+	                            closestMatch.setWayIndex(wayIndex);
+	//                          closestMatch.setSnappedPosition(NodeQuery.getSnappedPosition());
+	                            closestMatch.setSnappedPosition(pos);
+	                            return true;
+                        	}
                         }
                         return false;
                     }
