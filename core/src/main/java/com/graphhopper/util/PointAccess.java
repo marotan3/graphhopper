@@ -39,21 +39,23 @@ public interface PointAccess
      */
     void ensureNode( int nodeId );
 
+    void setNode( int nodeId, double lat, double lon);
     /**
      * This method ensures that the node with the specified index exists and prepares access to it.
      * The index goes from 0 (inclusive) to graph.getNodes() (exclusive)
      * <p/>
      * This methods sets the latitude, longitude and elevation to the specified value.
      */
-    void setNode( int nodeId, double lat, double lon );
+    void setNode( int nodeId, double lat, double lon, int tag );
 
+    void setNode( int nodeId, double lat, double lon, double ele );
     /**
      * This method ensures that the node with the specified index exists and prepares access to it.
      * The index goes from 0 (inclusive) to graph.getNodes() (exclusive)
      * <p/>
      * This methods sets the latitude, longitude and elevation to the specified value.
      */
-    void setNode( int nodeId, double lat, double lon, double ele );
+    void setNode( int nodeId, double lat, double lon, double ele, int tag );
 
     /**
      * @return the latitude at the specified node index
@@ -75,4 +77,6 @@ public interface PointAccess
     double getElevation( int nodeId );
 
     double getEle( int nodeId );
+
+	int getTag(int nodeId);
 }

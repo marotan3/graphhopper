@@ -83,7 +83,7 @@ public class GraphHopper implements GraphHopperAPI
     private int periodicUpdates = -1;
     private int lazyUpdates = -1;
     private int neighborUpdates = -1;
-    private double logMessages = -1;
+    private double logMessages = 1;
     // for OSM import
     private String osmFile;
     private double osmReaderWayPointMaxDistance = 1;
@@ -739,11 +739,12 @@ public class GraphHopper implements GraphHopperAPI
             dataAccessType = DAType.MMAP_RO;
 
         GHDirectory dir = new GHDirectory(ghLocation, dataAccessType);
-        if (chEnabled)
-            graph = new LevelGraphStorage(dir, encodingManager, hasElevation());
-        else if (encodingManager.needsTurnCostsSupport())
-            graph = new GraphHopperStorage(dir, encodingManager, hasElevation(), new TurnCostExtension());
-        else
+        //FIXME Experiment data
+//        if (chEnabled)
+//            graph = new LevelGraphStorage(dir, encodingManager, hasElevation());
+//        else if (encodingManager.needsTurnCostsSupport())
+//            graph = new GraphHopperStorage(dir, encodingManager, hasElevation(), new TurnCostExtension());
+//        else
             graph = new GraphHopperStorage(dir, encodingManager, hasElevation());
 
         graph.setSegmentSize(defaultSegmentSize);
@@ -793,9 +794,10 @@ public class GraphHopper implements GraphHopperAPI
     protected void postProcessing()
     {
         initLocationIndex();
-        if (chEnabled)
-            algoFactory = createPrepare();
-        else
+        //FIXME EXPERIMENT DATA
+//        if (chEnabled)
+//            algoFactory = createPrepare();
+//        else
             algoFactory = new RoutingAlgorithmFactorySimple();
 
         if (!isPrepared())
@@ -811,8 +813,8 @@ public class GraphHopper implements GraphHopperAPI
     {
         FlagEncoder defaultVehicle = getDefaultVehicle();
         Weighting weighting = createWeighting(new WeightingMap(chWeightingStr), defaultVehicle);
-        PrepareContractionHierarchies tmpPrepareCH = new PrepareContractionHierarchies(new GHDirectory("", DAType.RAM_INT),
-                (LevelGraph) graph, defaultVehicle, weighting, traversalMode);
+        PrepareContractionHierarchies tmpPrepareCH = new PrepareContractionHierarchies(new GHDirectory("", DAType.RAM_INT),(LevelGraph) graph,
+                defaultVehicle, weighting, traversalMode);
         tmpPrepareCH.setPeriodicUpdates(periodicUpdates).
                 setLazyUpdates(lazyUpdates).
                 setNeighborUpdates(neighborUpdates).
@@ -998,7 +1000,7 @@ public class GraphHopper implements GraphHopperAPI
 
             sw = new StopWatch().start();
             Path path = algo.calcPath(fromQResult.getClosestNode(), toQResult.getClosestNode());
-            if (path.getTime() < 0)
+            if (path.getMillis() < 0)
                 throw new RuntimeException("Time was negative. Please report as bug and include:" + request);
 
             paths.add(path);
@@ -1073,7 +1075,8 @@ public class GraphHopper implements GraphHopperAPI
         {
             ensureWriteAccess();
             logger.info("calling prepare.doWork for " + getDefaultVehicle() + " ... (" + Helper.getMemInfo() + ")");
-            ((PrepareContractionHierarchies) algoFactory).doWork();
+            //FIXME EXPERIMENT DATA
+//            ((PrepareContractionHierarchies) algoFactory).doWork();
             graph.getProperties().put("prepare.date", formatDateTime(new Date()));
         }
         graph.getProperties().put("prepare.done", tmpPrepare);

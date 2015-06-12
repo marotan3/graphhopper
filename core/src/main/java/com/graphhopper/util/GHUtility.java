@@ -265,9 +265,9 @@ public class GHUtility
         {
             int newIndex = oldToNewNodeList.get(old);
             if (sna.is3D())
-                sna.setNode(newIndex, na.getLatitude(old), na.getLongitude(old), na.getElevation(old));
+                sna.setNode(newIndex, na.getLatitude(old), na.getLongitude(old), na.getElevation(old), na.getTag(old));
             else
-                sna.setNode(newIndex, na.getLatitude(old), na.getLongitude(old));
+                sna.setNode(newIndex, na.getLatitude(old), na.getLongitude(old), na.getTag(old));
         }
         return toSortedGraph;
     }
@@ -292,9 +292,9 @@ public class GHUtility
         for (int node = 0; node < nodes; node++)
         {
             if (tna.is3D())
-                tna.setNode(node, fna.getLatitude(node), fna.getLongitude(node), fna.getElevation(node));
+                tna.setNode(node, fna.getLatitude(node), fna.getLongitude(node), fna.getElevation(node), fna.getTag(node));
             else
-                tna.setNode(node, fna.getLatitude(node), fna.getLongitude(node));
+                tna.setNode(node, fna.getLatitude(node), fna.getLongitude(node), fna.getTag(node));
         }
         return toGraph;
     }
@@ -317,11 +317,13 @@ public class GHUtility
     static GraphStorage guessStorage( Graph g, Directory outdir, EncodingManager encodingManager )
     {
         GraphStorage store;
-        boolean is3D = g.getNodeAccess().is3D();
-        if (g instanceof LevelGraphStorage)
-            store = new LevelGraphStorage(outdir, encodingManager, is3D);
-        else
-            store = new GraphHopperStorage(outdir, encodingManager, is3D);
+        //FIXME EXPERIMENT DATA
+//        boolean is3D = g.getNodeAccess().is3D();
+//        if (g instanceof LevelGraphStorage)
+//            store = new LevelGraphStorage(outdir, encodingManager, is3D);
+//        else
+//            store = new GraphHopperStorage(outdir, encodingManager, is3D);
+        store = new GraphHopperStorage(outdir, encodingManager, false);
 
         return store;
     }

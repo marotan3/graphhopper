@@ -38,6 +38,7 @@ public class PointList implements Iterable<GHPoint3D>, PointAccess
     private double[] latitudes;
     private double[] longitudes;
     private double[] elevations;
+    private int[] tags;
     protected int size = 0;
     protected boolean is3D;
 
@@ -50,6 +51,7 @@ public class PointList implements Iterable<GHPoint3D>, PointAccess
     {
         latitudes = new double[cap];
         longitudes = new double[cap];
+        tags = new int[cap];
         this.is3D = is3D;
         if (is3D)
             elevations = new double[cap];
@@ -78,22 +80,35 @@ public class PointList implements Iterable<GHPoint3D>, PointAccess
     @Override
     public void setNode( int nodeId, double lat, double lon )
     {
-        set(nodeId, lat, lon, Double.NaN);
+        setNode(nodeId, lat, lon, Double.NaN, 0);
     }
 
     @Override
     public void setNode( int nodeId, double lat, double lon, double ele )
     {
-        set(nodeId, lat, lon, ele);
+        setNode(nodeId, lat, lon, ele, 0);
+    }
+    
+    @Override
+    public void setNode( int nodeId, double lat, double lon, int tag )
+    {
+        set(nodeId, lat, lon, Double.NaN, tag);
     }
 
-    public void set( int index, double lat, double lon, double ele )
+    @Override
+    public void setNode( int nodeId, double lat, double lon, double ele, int tag )
+    {
+        set(nodeId, lat, lon, ele, tag);
+    }
+
+    public void set( int index, double lat, double lon, double ele, int tag )
     {
         if (index >= size)
             throw new ArrayIndexOutOfBoundsException("index has to be smaller than size " + size);
 
         latitudes[index] = lat;
         longitudes[index] = lon;
+        tags[index] = tag;
         if (is3D)
             elevations[index] = ele;
         else if (!Double.isNaN(ele))
@@ -110,6 +125,7 @@ public class PointList implements Iterable<GHPoint3D>, PointAccess
             cap = 15;
         latitudes = Arrays.copyOf(latitudes, cap);
         longitudes = Arrays.copyOf(longitudes, cap);
+        tags = Arrays.copyOf(tags, cap);
         if (is3D)
             elevations = Arrays.copyOf(elevations, cap);
     }
@@ -226,6 +242,18 @@ public class PointList implements Iterable<GHPoint3D>, PointAccess
     {
         return getElevation(index);
     }
+
+    @Override
+    public int getTag( int index )
+    {
+        if (index >= size)
+            throw new ArrayIndexOutOfBoundsException(ERR_MSG + " index:" + index + ", size:" + size);
+        if (!is3D)
+            return 0;
+
+        return tags[index];
+    }
+        
 
     public void reverse()
     {
@@ -446,7 +474,7 @@ public class PointList implements Iterable<GHPoint3D>, PointAccess
     public static PointList EMPTY = new PointList(0, true)
     {
         @Override
-        public void set( int index, double lat, double lon, double ele )
+        public void set( int index, double lat, double lon, double ele, int tag )
         {
             throw new RuntimeException("cannot change EMPTY PointList");
         }

@@ -816,12 +816,16 @@ public class LocationIndexTree implements LocationIndex
                     {
                         if (normedDist < closestMatch.getQueryDistance())
                         {
-                            closestMatch.setQueryDistance(normedDist);
-                            closestMatch.setClosestNode(node);
-                            closestMatch.setClosestEdge(edge.detach(false));
-                            closestMatch.setWayIndex(wayIndex);
-                            closestMatch.setSnappedPosition(pos);
-                            return true;
+                        	if(nodeAccess.getTag(node) != 0){
+	//                        	QueryResult NodeQuery = new QueryResult(graph.getNodeAccess().getLatitude(node), graph.getNodeAccess().getLongitude(node));
+	                            closestMatch.setQueryDistance(normedDist);
+	                            closestMatch.setClosestNode(node);
+	                            closestMatch.setClosestEdge(edge.detach(false));
+	                            closestMatch.setWayIndex(wayIndex);
+	//                          closestMatch.setSnappedPosition(NodeQuery.getSnappedPosition());
+	                            closestMatch.setSnappedPosition(pos);
+	                            return true;
+                        	}
                         }
                         return false;
                     }
@@ -914,7 +918,7 @@ public class LocationIndexTree implements LocationIndex
             {
                 double wayLat = pointList.getLatitude(pointIndex);
                 double wayLon = pointList.getLongitude(pointIndex);
-                QueryResult.Position pos = QueryResult.Position.EDGE;
+                QueryResult.Position pos = QueryResult.Position.TOWER;
                 if (distCalc.validEdgeDistance(queryLat, queryLon, tmpLat, tmpLon, wayLat, wayLon))
                 {
                     tmpNormedDist = distCalc.calcNormalizedEdgeDistance(queryLat, queryLon,

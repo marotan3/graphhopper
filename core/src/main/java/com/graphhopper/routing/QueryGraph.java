@@ -508,6 +508,14 @@ public class QueryGraph implements Graph
                 return virtualNodes.getElevation(nodeId - mainNodes);
             return mainNodeAccess.getElevation(nodeId);
         }
+        
+        @Override
+        public int getTag( int nodeId )
+        {
+            if (isVirtualNode(nodeId))
+                return virtualNodes.getTag(nodeId - mainNodes);
+            return mainNodeAccess.getTag(nodeId);
+        }
 
         @Override
         public int getAdditionalNodeField( int nodeId )
@@ -525,6 +533,18 @@ public class QueryGraph implements Graph
 
         @Override
         public void setNode( int nodeId, double lat, double lon, double ele )
+        {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void setNode( int nodeId, double lat, double lon, int tag )
+        {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void setNode( int nodeId, double lat, double lon, double ele, int tag )
         {
             throw new UnsupportedOperationException("Not supported yet.");
         }

@@ -61,16 +61,29 @@ public class PillarInfo implements PointAccess
     {
         long tmp = (long) nodeId * rowSizeInBytes;
         da.ensureCapacity(tmp + rowSizeInBytes);
+    }  
+    
+    @Override
+    public void setNode( int nodeId, double lat, double lon )
+    {
+        setNode(nodeId, lat, lon, Double.NaN, 0);
     }
 
     @Override
-    public void setNode( int nodeId, double lat, double lon )
+    public void setNode( int nodeId, double lat, double lon, int tag )
     {
         _setNode(nodeId, lat, lon, Double.NaN);
     }
 
+
     @Override
     public void setNode( int nodeId, double lat, double lon, double ele )
+    {
+        setNode(nodeId, lat, lon, ele, 0);
+    }
+    
+    @Override
+    public void setNode( int nodeId, double lat, double lon, double ele, int tag )
     {
         _setNode(nodeId, lat, lon, ele);
     }
@@ -132,4 +145,10 @@ public class PillarInfo implements PointAccess
     {
         dir.remove(da);
     }
+
+	@Override
+	public int getTag(int id) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
