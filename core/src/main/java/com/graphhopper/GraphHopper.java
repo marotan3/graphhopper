@@ -733,11 +733,11 @@ public class GraphHopper implements GraphHopperAPI
 
         GHDirectory dir = new GHDirectory(ghLocation, dataAccessType);
         //FIXME Experiment data
-//        if (chEnabled)
-//            graph = new LevelGraphStorage(dir, encodingManager, hasElevation());
-//        else if (encodingManager.needsTurnCostsSupport())
-//            graph = new GraphHopperStorage(dir, encodingManager, hasElevation(), new TurnCostExtension());
-//        else
+        if (chEnabled)
+            graph = new LevelGraphStorage(dir, encodingManager, hasElevation());
+        else if (encodingManager.needsTurnCostsSupport())
+            graph = new GraphHopperStorage(dir, encodingManager, hasElevation(), new TurnCostExtension());
+        else
             graph = new GraphHopperStorage(dir, encodingManager, hasElevation());
 
         graph.setSegmentSize(defaultSegmentSize);
@@ -788,9 +788,9 @@ public class GraphHopper implements GraphHopperAPI
     {
         initLocationIndex();
         //FIXME EXPERIMENT DATA
-//        if (chEnabled)
-//            algoFactory = createPrepare();
-//        else
+        if (chEnabled)
+            algoFactory = createPrepare();
+        else
             algoFactory = new RoutingAlgorithmFactorySimple();
 
         if (!isPrepared())
@@ -1048,7 +1048,7 @@ public class GraphHopper implements GraphHopperAPI
             ensureWriteAccess();
             logger.info("calling prepare.doWork for " + getDefaultVehicle() + " ... (" + Helper.getMemInfo() + ")");
             //FIXME EXPERIMENT DATA
-//            ((PrepareContractionHierarchies) algoFactory).doWork();
+            ((PrepareContractionHierarchies) algoFactory).doWork();
             graph.getProperties().put("prepare.date", formatDateTime(new Date()));
         }
         graph.getProperties().put("prepare.done", tmpPrepare);

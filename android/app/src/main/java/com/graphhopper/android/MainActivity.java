@@ -559,7 +559,7 @@ public class MainActivity extends Activity
                 	req.addPoint(point);
         		}
 
-                req.setAlgorithm(AlgorithmOptions.ASTAR_BI);
+                req.setAlgorithm(AlgorithmOptions.DIJKSTRA_BI);
                 req.getHints().
                         put("instructions", "true");
                 GHResponse resp = hopper.route(req);
