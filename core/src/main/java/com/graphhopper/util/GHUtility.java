@@ -318,11 +318,11 @@ public class GHUtility
     {
         GraphStorage store;
         //FIXME EXPERIMENT DATA
-//        boolean is3D = g.getNodeAccess().is3D();
-//        if (g instanceof LevelGraphStorage)
-//            store = new LevelGraphStorage(outdir, encodingManager, is3D);
-//        else
-//            store = new GraphHopperStorage(outdir, encodingManager, is3D);
+        boolean is3D = g.getNodeAccess().is3D();
+        if (g instanceof LevelGraphStorage)
+            store = new LevelGraphStorage(outdir, encodingManager, is3D);
+        else
+            store = new GraphHopperStorage(outdir, encodingManager, is3D);
         store = new GraphHopperStorage(outdir, encodingManager, false);
 
         return store;

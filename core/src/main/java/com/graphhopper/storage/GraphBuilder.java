@@ -47,7 +47,7 @@ public class GraphBuilder
     public GraphBuilder setLevelGraph( boolean level )
     {
     	//FIXME EXPERIMENT DATA
-        this.level = false;
+        this.level = level;
         return this;
     }
 
@@ -89,7 +89,7 @@ public class GraphBuilder
     public LevelGraphStorage levelGraphBuild()
     {
     	//FIXME EXPERIMENT DATA
-        return (LevelGraphStorage) setLevelGraph(false).build();
+        return (LevelGraphStorage) setLevelGraph(true).build();
     }
 
     /**
@@ -98,7 +98,7 @@ public class GraphBuilder
     public LevelGraphStorage levelGraphCreate()
     {
     	//FIXME EXPERIMENT DATA
-        return (LevelGraphStorage) setLevelGraph(false).create();
+        return (LevelGraphStorage) setLevelGraph(true).create();
     }
 
     /**
@@ -116,15 +116,15 @@ public class GraphBuilder
 
         GraphStorage graph;
     	//FIXME EXPERIMENT DATA
-//        if (level)
-//            graph = new LevelGraphStorage(dir, encodingManager, elevation);
-//        else
-//        {
+        if (level)
+            graph = new LevelGraphStorage(dir, encodingManager, elevation);
+        else
+        {
             if (encodingManager.needsTurnCostsSupport())
                 graph = new GraphHopperStorage(dir, encodingManager, elevation, new TurnCostExtension());
             else
                 graph = new GraphHopperStorage(dir, encodingManager, elevation);
-//        }
+        }
 
         return graph;
     }
